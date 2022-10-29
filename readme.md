@@ -2,7 +2,7 @@
 
 A mashup of [mitmproxy](https://github.com/mitmproxy/mitmproxy) and [jderusse/docker-dns-gen](https://github.com/jderusse/docker-dns-gen)
 
----
+[![Docker Pulls](https://img.shields.io/docker/pulls/hypery2k/mitm-nginx-proxy-companion.svg)](https://hub.docker.com/r/hypery2k/mitm-nginx-proxy-companion)
 
 Why:
 
@@ -30,16 +30,16 @@ version: '3.3'
 services:
 
   nginx-proxy-mitm:
-    dns:
-      - 127.0.0.1
-    image: artemkloko/mitm-nginx-proxy-companion
+    image: hypery2k/mitm-nginx-proxy-companion
     ports:
       - "8080:8080"
+    dns:
+      - 127.0.0.1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
 
   nginx-proxy:
-    image: jwilder/nginx-proxy
+    image: nginxproxy/nginx-proxy:latest
     labels:
       - "mitmproxy.proxyVirtualHosts=true"
     volumes:
@@ -54,11 +54,3 @@ services:
 - Run `docker-compose up`
 - Add a proxy extension to your browser, with proxy address being `127.0.0.1:8080`
 - Access `http://example-one.com`
-
----
-
-Full guide:
-
-[Mocking domain names in a maintainable and scalable way](https://medium.com/@artemkloko/mocking-domain-names-in-a-maintainable-and-scalable-way-def29e5e5e32)
-
-This guide goes through some of the techniques used to locally mock domain names, briefly explains why they are not suitable and resolves those issues with the use of mitm-nginx-proxy-companion.
