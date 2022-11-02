@@ -71,4 +71,30 @@ jobs:
           push: false
           tags: ${{ steps.prep.outputs.tags }}
           cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Prepare Test
+        id: prepare-test
+        run: docker compose build && docker compose up -d
+
+      - name: Test
+        id: test
+        run: |
+          container=$(docker inspect --format="{{.Id}}" "docker-mitm-nginx-proxy-companion-nginx-proxy-mitm-1")
+          docker run $container /bin/bash -c "http_proxy=http://localhost:8080/ curl --fail --retry 10 http://example-one.com"
+
+      - name: CleanUp Test
+        id: clean-test
+        run: docker compose down || true
+
+      - name: Build
+        uses: docker/build-push-action@v2
+        with:
+          builder: ${{ steps.buildx.outputs.name }}
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
+          cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
