@@ -6,7 +6,7 @@ web_port: {{ .Env.WEB_PORT }}
 {{/* Search through containers' labels to find where to proxy the virtual hosts to */}}
 {{ range $index, $proxyContainer := $ }}
     {{ if eq (index $proxyContainer.Labels "mitmproxy.proxyVirtualHosts") "true" }}
-mode: 
-  - "upstream:http://{{ $proxyContainer.Hostname }}:80"
+  # TODO: For mitmproxy v9. use list
+mode: "upstream:http://{{ $proxyContainer.Hostname }}:80"
     {{ end }}
 {{ end }}
