@@ -25,6 +25,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      # TODO test on ARM + AMD64
       - name: Test
         id: test
         run: |
@@ -40,14 +41,16 @@ jobs:
         id: prep
         run: |
           #determine dockehub image using dockerhub username and github repo suffix
-          DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/${GITHUB_REPOSITORY#*/}
-          VERSION=latest
+          DOCKER_IMAGE=${{ secrets.DOCKER_USERNAME }}/mitm-nginx-proxy-companion
+          # default to version
+          VERSION=next
           SHORTREF=${GITHUB_SHA::8}
 
           #use branch as version
           if [[ $GITHUB_REF == refs/heads/* ]]; then
             VERSION=${GITHUB_REF#refs/heads/}
             [ $VERSION == "main" ] && VERSION=latest
+            [ $VERSION == "develop" ] && VERSION=next
           fi
 
           #use tag as version
