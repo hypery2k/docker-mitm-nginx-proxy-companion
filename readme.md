@@ -11,6 +11,12 @@ A mashup of [mitmproxy](https://github.com/mitmproxy/mitmproxy) and [jderusse/do
 > - So you can inspect intermediate pings/hops of redirects
 > - So you can use your production [nginx-proxy/nginx-proxy](https://github.com/nginx-proxy/nginx-proxy)-based setup localy
 
+```mermaid
+  flowchart LR;
+      Docker-Host-->Proxy([mitm Proxy]);
+      Proxy-->App([Application Container]);
+```
+
 # Requirements
 
 - Set container dns to `127.0.0.1`
@@ -27,8 +33,6 @@ services:
 
   nginx-proxy-mitm:
     image: hypery2k/mitm-nginx-proxy-companion
-    tty: true
-    stdin_open: true
     ports:
       - "8080:8080"
       # Can be used to access mitm web interface
