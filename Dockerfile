@@ -42,7 +42,7 @@ RUN git clone https://github.com/nginx-proxy/forego/ \
    && rm -rf /go/forego
 
 # Build our image
-FROM alpine:latest
+FROM rust:alpine
 
 ENV PROXY_PORT=8080
 ENV WEB_PORT=8081
@@ -56,7 +56,7 @@ EXPOSE 8081
 LABEL maintainer="artemkloko <artemkloko@gmail.com>"
 
 # Because forego requires bash
-RUN apk add --no-cache bash dnsmasq ca-certificates gcc libffi-dev python3-dev musl-dev openssl-dev g++ libxml2-dev libxslt-dev libjpeg-turbo-dev zlib-dev cargo && \
+RUN apk add --no-cache bash dnsmasq libffi-dev python3-dev musl-dev openssl-dev libxml2-dev libxslt-dev libjpeg-turbo-dev zlib-dev && \
   apk add cmd:pip3 && pip3 install --upgrade pip && pip3 install mitmproxy
 # Create a group and user for mitmproxy
 RUN addgroup -S mitmproxy && adduser -S mitmproxy -G mitmproxy -s /bin/sh
