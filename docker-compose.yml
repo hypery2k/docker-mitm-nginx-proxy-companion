@@ -4,12 +4,19 @@ services:
 
   nginx-proxy-mitm:
     build: .
+    tty: true
     ports:
       - "8080:8080"
     dns:
       - 127.0.0.1
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
+    healthcheck:
+      test: curl --fail http://localhost:8080 || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
 
   nginx-proxy:
     image: nginxproxy/nginx-proxy:latest
@@ -17,8 +24,20 @@ services:
       - "mitmproxy.proxyVirtualHosts=true"
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+    healthcheck:
+      test: curl --fail http://localhost || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
 
   example-one:
     environment:
       VIRTUAL_HOST: example-one.com
     image: nginx:alpine
+    healthcheck:
+      test: curl --fail http://localhost || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s

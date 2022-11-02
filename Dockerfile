@@ -46,6 +46,7 @@ FROM alpine:latest
 
 ENV PROXY_PORT=8080
 ENV WEB_PORT=8081
+
 # Expose ports
 #   - 8080: Default mitmproxy port
 #   - 8081: Default mitmweb port
@@ -54,9 +55,11 @@ EXPOSE 8081
 
 LABEL maintainer="artemkloko <artemkloko@gmail.com>"
 
-# Because forego requires bash and screen for mitmproxy
-RUN apk add --no-cache bash dnsmasq screen ca-certificates gcc libffi-dev python3-dev musl-dev openssl-dev g++ libxml2-dev libxslt-dev libjpeg-turbo-dev zlib-dev cargo && \
+# Because forego requires bash
+RUN apk add --no-cache bash dnsmasq ca-certificates gcc libffi-dev python3-dev musl-dev openssl-dev g++ libxml2-dev libxslt-dev libjpeg-turbo-dev zlib-dev cargo && \
   apk add cmd:pip3 && pip3 install --upgrade pip && pip3 install mitmproxy
+# Create a group and user for mitmproxy
+RUN addgroup -S mitmproxy && adduser -S mitmproxy -G mitmproxy -s /bin/sh
 
 # Install Forego + docker-gen
 COPY --from=forego /usr/local/bin/forego /usr/local/bin/forego
@@ -65,7 +68,6 @@ COPY --from=dockergen /usr/local/bin/docker-gen /usr/local/bin/docker-gen
 COPY bin/* /usr/local/bin/
 RUN chmod +x /usr/local/bin/*.sh
 
-ADD dnsmasq.tmpl /etc/dnsmasq.tmpl
-ADD dnsmasq-reload /usr/local/bin/dnsmasq-reload
+ADD etc/*.tmpl /etc/
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

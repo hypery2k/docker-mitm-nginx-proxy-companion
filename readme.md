@@ -31,6 +31,8 @@ services:
     stdin_open: true
     ports:
       - "8080:8080"
+      # Can be used to access mitm web interface
+      - "8081:8081"
     dns:
       - 127.0.0.1
     volumes:
