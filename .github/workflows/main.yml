@@ -1,6 +1,9 @@
 name: CI
 
-on: [push]
+on:
+  pull_request:
+  merge_group:
+  push:
 
 jobs:
   docker:
@@ -30,7 +33,7 @@ jobs:
         id: test
         run: |
           docker compose up -d --build
-          docker ps 
+          docker ps
           docker exec mitm-proxy /bin/bash -c "HTTP_PROXY=\"http://localhost:8080/\" curl --connect-timeout 30 --retry-delay 5 --retry-connrefused --retry-max-time 120 http://example-one.com"
 
       - name: CleanUp Test
