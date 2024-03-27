@@ -57,7 +57,7 @@ LABEL maintainer="artemkloko <artemkloko@gmail.com>"
 
 # Because forego requires bash
 RUN apk add --no-cache curl bash dnsmasq libffi-dev python3-dev musl-dev openssl-dev libxml2-dev libxslt-dev libjpeg-turbo-dev zlib-dev && \
-  apk add cmd:pip3 && pip3 install --upgrade pip && pip3 install mitmproxy==8.1.1
+  apk add cmd:pip3 && pip3 install --upgrade pip --break-system-packages && pip3 install mitmproxy==8.1.1 --break-system-packages
 # Create a group and user for mitmproxy
 RUN addgroup -S mitmproxy && adduser -S mitmproxy -G mitmproxy -s /bin/sh
 
